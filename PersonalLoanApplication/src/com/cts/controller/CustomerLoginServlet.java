@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.cts.dao.DBUtil;
 import com.cts.dao.Validation;
@@ -36,9 +37,12 @@ public class CustomerLoginServlet extends HttpServlet {
 		    
 		    String email = request.getParameter("email");
 		    String pass = request.getParameter("pass");
+	
 		    
 		    if(Validation.checkUser(email, pass))
 		    {
+		    	HttpSession session=request.getSession(true);  
+	    		session.setAttribute("user",email.substring(1, email.indexOf('@')));
 		        RequestDispatcher rs = request.getRequestDispatcher("welcome.html");
 		        rs.forward(request, response);
 		    }

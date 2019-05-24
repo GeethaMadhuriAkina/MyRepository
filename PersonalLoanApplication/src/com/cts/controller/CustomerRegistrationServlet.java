@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cts.dao.DBUtil;
 import com.cts.model.Customer;
+import com.cts.service.CustomerService;
+import com.cts.service.CustomerServiceImpl;
 
 /**
  * Servlet implementation class CustomerRegistrationServlet
@@ -34,40 +36,38 @@ public class CustomerRegistrationServlet extends HttpServlet {
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		PrintWriter pw=response.getWriter();
+
+		SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+		String fname=request.getParameter("firstname");
+		String lname=request.getParameter("lastname");
+		long mobile=Long.parseLong(request.getParameter("number"));
+		String email=request.getParameter("email");
+		String pan=request.getParameter("PanNumber");
+		long aadhaar=Long.parseLong(request.getParameter("AadharNumber"));
+		String dob =request.getParameter("dob");
+		String pwd=request.getParameter("pwd");
+		
+		
+		Customer c1=new Customer();
+		c1.setFirstName(fname);
+		c1.setLastName(lname);
+		c1.setMobileNumber(mobile);
+		c1.setEmail(email);
 		try {
-			PrintWriter pw=response.getWriter();
-	
-			SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
-			String fname=request.getParameter("firstname");
-			String lname=request.getParameter("lastname");
-			long mobile=Long.parseLong(request.getParameter("number"));
-			String email=request.getParameter("email");
-			String pan=request.getParameter("PanNumber");
-			long aadhaar=Long.parseLong(request.getParameter("AadharNumber"));
-			String dob =request.getParameter("dob");
-			String pwd=request.getParameter("pwd");
-			
-			String sql="insert into Customer_Master(fisrt_name,last_name,mobile_number,email,date_of_birth,pancard_number,aadhar_number,password) values (?,?,?,?,?,?,?,?)";
-			s=con.prepareStatement(sql);
-		    s.setString(1,fname);
-		    s.setString(2,lname);
-		    s.setLong(3,mobile);
-		    s.setString(4,email);
-		    s.setString(5, dob);
-		    s.setString(6,pan);
-		    s.setLong(7,aadhaar);
-		    s.setString(8,pwd);
-			int n=s.executeUpdate();
-			if(n!=0)
-			{
-				pw.write("Customer details inserted successfully");
-			}
-			else
-				pw.write("OOps!!Customer details are not inserted");
-		} catch (SQLException e) {
+			c1.setDob(sdf.parse(dob));
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		c1.setPanCardNumber(pan);
+		c1.setAadharNumber(aadhaar);
+		c1.setPassword(pwd);
+		CustomerService cs=new CustomerServiceImpl();
+		if(cs.addService(c1))
+			pw.write("Customer Registered successfully");
+		else
+			pw.write("OOps!!Customer could not be  Registered");
+			
 	}
 	}
